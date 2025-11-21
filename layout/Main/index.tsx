@@ -30,60 +30,31 @@ const Main: FC<Props> = ({ calenderStoryData }) => {
     (data) => data[0] === selectedDay
   );
   return (
-    <>
-      <div className="flex items-center justify-center p-4">
-        <p>{APP_TITLE}</p>
-        <Link href="/guides" className="fixed right-4 top-2">
-          <CircleQuestionMark size={36} />
-        </Link>
-      </div>
-      <div className="flex flex-col justify-center items-center">
-        <Calendar
-          onChange={(e) => {
-            if (e instanceof Date) {
-              setSelectedDay(e.toLocaleDateString());
-              console.log(e.toLocaleDateString());
-            } else {
-              alert("複数選択は許可されていません。");
-              setSelectedDay("");
-            }
-          }}
-          tileContent={({ date }) => {
-            if (calenderStoryDataKeys.includes(date.toLocaleDateString())) {
-              return <DoneMark className="w-full mx-auto mt-1" />;
-            }
-            return <div className="w-6 h-7" />;
-          }}
-        />
-        <Swiper
-          spaceBetween={50}
-          slidesPerView="auto"
-          onSlideChange={() => console.log("slide change")}
-          onSwiper={(swiper) => console.log(swiper)}
+    <div className="bg-[url('/images/background.jpg')] h-dvh flex flex-col overflow-hidden">
+      <header 
+        className="relative flex items-center justify-end w-full pt-6 pb-3 bg-[#C1ED86] border-b-2 border-[#93C400] shadow-md px-4"
+      >
+        
+        <h1
+          className="absolute left-1/2 transform -translate-x-1/2"
         >
-          {findEntries &&
-            findEntries[1].map((data) => (
-              <SwiperSlide className="relative">
-                <Image
-                  src={data.image}
-                  alt="サムネイル画像"
-                  width={350}
-                  height={350}
-                  className="mx-auto"
-                />
-                <p className="absolute text-2xl text-gray-400 bottom-4 right-10">
-                  {data.title}
-                </p>
-              </SwiperSlide>
-            ))}
-        </Swiper>
-      </div>
-      <div className="fixed bottom-0 w-full h-20 flex justify-center items-center border-t">
-        <div className="w-1/4 h-full flex justify-center items-center border">
-          物語作成
-        </div>
-      </div>
-    </>
+          <Image
+            src={"/images/icon.png"}
+            alt="ロゴ"
+            width={96}
+            height={16}
+            priority
+          />
+        </h1>
+
+        <button className="h-fit px-2 py-1 bg-[#FF8258] text-white font-bold border-2 border-white text-sm rounded-md z-10">
+          つかいかた！
+        </button>
+        
+      </header>
+
+      
+    </div>
   );
 };
 
