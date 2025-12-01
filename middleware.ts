@@ -3,7 +3,7 @@ import { auth0 } from "./lib/auth0";
 
 export async function middleware(request: NextRequest) {
   const session = await auth0.getSession(request);
-  console.log("session:", session.tokenSet.accessToken);
+  console.log("session:", session?.tokenSet.accessToken);
   return await auth0.middleware(request);
 }
 
