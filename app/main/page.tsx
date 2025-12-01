@@ -1,28 +1,31 @@
-import { FC } from "react";
 import Main from "@/layout/Main";
+import axios from "axios";
+import { groupStoriesByDate } from "./storyProcessor";
+import { GroupedStories, RawStoryListResponse } from "@/types";
 
-const Page: FC = () => {
-  const calendarStoryData = {
-    "2025/10/1": [
-      {
-        image:
-          "https://placehold.jp/3d4070/ffffff/150x150.png?text=test%20Image1",
-        title: "test Title1",
-      },
-    ],
-    "2025/10/3": [
-      {
-        image:
-          "https://placehold.jp/3e7051/ffffff/150x150.png?text=test%20Image2",
-        title: "test Title2",
-      },
-      {
-        image:
-          "https://placehold.jp/703e48/ffffff/150x150.png?text=test%20Image3",
-        title: "test Title3",
-      },
-    ],
-  };
+async function getStoriesWithAxios(): Promise<RawStoryListResponse | []> {
+  try {
+      // 💡 axiosの利点: データは response.data に含まれる
+      const response = await axios.get<RawStoryListResponse>("http://localhost:3000/api/story/chapter/stories");
+
+      console.log('✅ Data fetched successfully (axios):', response.data);
+      return response.data;
+
+  } catch (error) {
+      // 💡 axiosの利点: 4xx/5xxのエラーもここでキャッチされる
+      if (axios.isAxiosError(error)) {
+          console.error('❌ Axios Error Status:', error.response?.status);
+          console.error('❌ Axios Error Data:', error.response?.data);
+      } else {
+          console.error('❌ Unknown Error:', error);
+      }
+      return [];
+  }
+}
+
+const Page = async () => {
+  const rawStories = await getStoriesWithAxios();
+  const calendarStoryData: GroupedStories = groupStoriesByDate(rawStories);
 
   return <Main calenderStoryData={calendarStoryData} />;
 };
