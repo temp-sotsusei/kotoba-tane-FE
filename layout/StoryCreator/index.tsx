@@ -86,7 +86,7 @@ const StoryCreator: FC<Props> = ({ wordsList }) => {
   });
   const [title, setTitle] = useState<string>("");
   const [thumbnailId, setThumbnailId] = useState<number>(0);
-  const [currentWords, setCurrentWords] = useState<string[]>();
+  const [currentWords, setCurrentWords] = useState<string[] | undefined>();
   const [nestedWordList, setNestedWordList] = useState(wordsList);
   const { usedWords, allUsed } = useWordCheck(story, currentWords);
 

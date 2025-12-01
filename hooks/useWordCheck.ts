@@ -10,9 +10,9 @@ type UseWordCheckResult = {
 /**
  * TipTap の JSONContent から currentWords の使用状況を取得
  */
-export const useWordCheck = (json: JSONContent, currentWords: string[]): UseWordCheckResult => {
+export const useWordCheck = (json: JSONContent, currentWords: string[] | undefined): UseWordCheckResult => {
   return useMemo(() => {
-    if (!json) return { usedWords: [], unusedWords: currentWords, allUsed: false };
+    if (!json || !currentWords) return { usedWords: [], unusedWords: [], allUsed: false };
 
     const usedSet = new Set<string>();
 
