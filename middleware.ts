@@ -1,10 +1,24 @@
-import type { NextRequest } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 import { auth0 } from "./lib/auth0";
 
 export async function middleware(request: NextRequest) {
-  const session = await auth0.getSession(request);
-  console.log("session:", session?.tokenSet.accessToken);
-  return await auth0.middleware(request);
+  const authResponse = await auth0.middleware(request);
+  const session = await auth0.getSession();
+  const redirectPath = "/main";
+
+  if (request.nextUrl.pathname.startsWith("/auth")) {
+    return authResponse;
+  }
+
+  if (!session?.tokenSet.accessToken) {
+    return NextResponse.redirect(
+      new URL(`/auth/login?returnTo=${redirectPath}`, request.url)
+    );
+  }
+
+  await auth0.getAccessToken(request, authResponse);
+
+  return authResponse;
 }
 
 export const config = {
