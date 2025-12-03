@@ -29,8 +29,8 @@ const apiClient = {
             },
           });
         }
-      } catch (e) {
-        throw new Error(`アクセストークンを取得出来ませんでした ${e}`);
+      } catch (err) {
+        throw new Error(`アクセストークンを取得出来ませんでした ${err}`);
       }
     }
 
