@@ -26,7 +26,7 @@ import CustomWord from "@/components/CustomWord";
 import { stripHtml } from "string-strip-html";
 import { MAX_CHAPTER_CHARS, MAX_DROPPABLE_ELEMENTS } from "@/const";
 import DroppableBox from "@/components/DroppableBox";
-import { mergeDroppedText } from "@/uitls/mergeDroppedText";
+import { mergeDroppedText } from "@/utils/mergeDroppedText";
 
 type RenderChapterItem = {
   text: string;

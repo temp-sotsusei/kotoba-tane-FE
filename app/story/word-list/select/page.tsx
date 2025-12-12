@@ -1,13 +1,9 @@
 import StoryCreator from "@/layout/StoryCreator";
+import { getFirstKeywordList } from "@/utils/apiClient";
 import { FC } from "react";
 
-const Page: FC = () => {
-  // TODO:文字数による表記崩れについて調査したい
-  const nestedWordList: string[][] = [
-    ["どうぶつ", "もり", "かぎ", "たからもの"],
-    ["まほうつかい", "ほし", "てがみ", "ねがい"],
-    ["ふね", "そら", "ともだち", "ぼうけん"],
-  ];
+const Page: FC = async () => {
+  const nestedWordList = await getFirstKeywordList();
 
   return <StoryCreator wordsList={nestedWordList} />;
 };
