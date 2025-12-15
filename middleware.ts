@@ -3,7 +3,7 @@ import { auth0 } from "./lib/auth0";
 
 export async function middleware(request: NextRequest) {
   const authResponse = await auth0.middleware(request);
-  const session = await auth0.getSession();
+  const session = await auth0.getSession(request);
   const redirectPath = "/main";
 
   if (request.nextUrl.pathname.startsWith("/auth")) {
