@@ -4,11 +4,12 @@ import React, { FC, useState } from 'react'
 type TitleThumbnailSetterProps = {
   title: string;
   setTitle: (v: string) => void;
-  thumbnailId: number;
-  setThumbnailId: (id: number) => void;
+  thumbnails: Array<{id: string; url: string}>;
+  thumbnailId: string;
+  setThumbnailId: (id: string) => void;
 }
 
-const TitleThumbnailSetter: FC<TitleThumbnailSetterProps> = ({title, setTitle, thumbnailId, setThumbnailId}) => {
+const TitleThumbnailSetter: FC<TitleThumbnailSetterProps> = ({title, setTitle, thumbnails, thumbnailId, setThumbnailId}) => {
   return (
     <>
       <p className='text-lg font-bold'>だいめい<span className='text-base mx-1'>と</span>ひょうし<span className='text-base mx-1'>を</span>きめよう！</p>
@@ -28,13 +29,13 @@ const TitleThumbnailSetter: FC<TitleThumbnailSetterProps> = ({title, setTitle, t
 
         <div className='aspect-[2/3] w-full p-2 rounded-lg shadow-xl bg-white overflow-y-auto'>
           <div className='grid grid-cols-3 gap-4'>
-            {Array.from({ length: 10 }).map((_, i) => {
-              const isSelected = thumbnailId === i;
+            {thumbnails.map((thumbnail, i) => {
+              const isSelected = thumbnailId === thumbnail.id+""+i;
 
               return (
               <div
-                key={i}
-                onClick={(e) => setThumbnailId(i)}
+                key={thumbnail.id+""+i}
+                onClick={(e) => setThumbnailId(thumbnail.id+""+i)}
                 className={`
                   aspect-[2/3] w-full bg-amber-200 cursor-pointer rounded-md
                   transition-all duration-200

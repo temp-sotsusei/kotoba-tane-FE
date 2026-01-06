@@ -85,7 +85,6 @@ const CreateStory: FC<Props> = ({ words, usedWords, storyIndex, story, storyText
       },
     },
     onUpdate: (e) => {
-      console.log(e.editor.getJSON())
       updateStory(e.editor.getJSON())
     },
     immediatelyRender: false
