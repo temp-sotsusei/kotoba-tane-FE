@@ -1,10 +1,10 @@
-import { Stories } from "@/layout/StoryCreator/types";
+import { JSONContent } from "@tiptap/react";
 
 export type StorySavePostBody = {
   storyTitle: string;
   thumbnailId: string;
   chapters: {
     chapterNum: number;
-    chapterJson: Stories;
+    chapterJson: JSONContent;
   }[];
 };
