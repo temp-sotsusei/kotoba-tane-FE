@@ -12,12 +12,14 @@ import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { useRouter } from "next/navigation";
 
 type Props = {
   calenderStoryData: GroupedStories;
 };
 
 const Main = ({ calenderStoryData }: Props) => {
+  const router = useRouter();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
   const handleDateSelection = (date: Date) => {
@@ -102,7 +104,10 @@ const Main = ({ calenderStoryData }: Props) => {
                   <SwiperSlide key={story.storyId}>
                     <div className="flex flex-col items-center px-4">
                       {/* 表紙（タイトル帯を同一ラッパーで重ねる） */}
-                      <div className="relative w-64 h-88 rounded-lg overflow-hidden shadow-2xl bg-white">
+                      <div
+                        className="relative w-64 h-88 rounded-lg overflow-hidden shadow-2xl bg-white"
+                        onClick={() => router.push(`/story/view/${story.storyId}`)}  
+                      >
                         {/* 画像 */}
                         <Image
                           src={story.thumbnailPath}

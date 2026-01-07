@@ -202,13 +202,15 @@ export const useStoryCreator = () => {
             return;
         }
 
+        const chaptersPayload = stories.map(story => ({
+            chapterNum: story.id,
+            chapterJson: JSON.parse(JSON.stringify(story.story)),
+        }));
+
         const response = await postStorySave({
             storyTitle: title,
             thumbnailId: "019a9c35-c8ec-745a-a469-64cfb68111bc",
-            chapters: stories.map(story => ({
-                chapterNum: story.id,
-                chapterJson: story.story,
-            })),
+            chapters: chaptersPayload,
         });
         console.log("Story saved successfully:", response);
     }

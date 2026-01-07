@@ -31,6 +31,7 @@ const CustomWord = Node.create<CustomWordOptions>({
     return {
       text: {
         default: "",
+        parseHTML: element => element.innerText || element.getAttribute('data-text'),
       },
       droppedId: {
         default: null,
@@ -39,7 +40,19 @@ const CustomWord = Node.create<CustomWordOptions>({
   },
 
   parseHTML() {
-    return [{ tag: "span.custom-word" }];
+    return [
+      {
+        tag: 'span.custom-word',
+        // getAttrs を使って DOM から JSON の属性へ値を戻す
+        getAttrs: (node) => {
+          if (!(node instanceof HTMLElement)) return {};
+          return {
+            text: node.innerText,
+            droppedId: node.getAttribute('data-id'),
+          };
+        },
+      },
+    ];
   },
 
   renderHTML({ node, HTMLAttributes }) {
@@ -47,6 +60,7 @@ const CustomWord = Node.create<CustomWordOptions>({
       "span",
       mergeAttributes(HTMLAttributes, {
         class: "custom-word",
+        "data-id": node.attrs.droppedId,
       }),
       node.attrs.text,
     ];

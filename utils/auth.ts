@@ -1,13 +1,20 @@
 import { auth0 } from "@/lib/auth0";
-import { getAccessToken } from "@auth0/nextjs-auth0";
 
 export const isAuthenticatedUser = async () => {
   const executionContext = typeof window === "undefined" ? "server" : "client";
+
   if (executionContext === "server") {
-    const { token } = await auth0.getAccessToken();
-    return Boolean(token);
+    // サーバーサイド: getSession はログインしてなければ null を返すだけでエラーにならない
+    const session = await auth0.getSession();
+    return Boolean(session?.tokenSet?.accessToken);
   } else {
-    const token = await getAccessToken();
-    return Boolean(token);
+    // クライアントサイド: 同様にセッションの有無を確認
+    try {
+      // フロントエンド用の auth0 インスタンスから取得
+      const session = await fetch('/auth/session').then(res => res.json());
+      return Boolean(session?.accessToken);
+    } catch {
+      return false;
+    }
   }
 };
