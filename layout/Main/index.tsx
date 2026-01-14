@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { GroupedStories } from "@/types";
 import CalendarUI from "@/components/CalendarUI";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Navigation } from "swiper/modules";
 import { toDateKey } from "@/hooks/utils/calendarUtils";
@@ -13,6 +13,30 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { useRouter } from "next/navigation";
+
+function StoryCard({ story }) {
+  // 1. 初期値は渡されたパス、なければデフォルト画像
+  const [imgSrc, setImgSrc] = useState(story.thumbnailPath || '/images/no-image.png');
+
+  // 2. 親から渡される story.thumbnailPath が変わった時に state を更新する
+  useEffect(() => {
+    setImgSrc(story.thumbnailPath || '/images/no-image.png');
+  }, [story.thumbnailPath]);
+
+  return (
+    <Image
+      src={imgSrc}
+      alt={story.storyTitle}
+      fill
+      className="object-cover"
+      style={{ objectPosition: 'center center' }}
+      // 3. 画像読み込みエラー（404等）が発生した瞬間に発火
+      onError={() => {
+        setImgSrc('/images/no-image.png');
+      }}
+    />
+  );
+}
 
 type Props = {
   calenderStoryData: GroupedStories;
@@ -109,16 +133,10 @@ const Main = ({ calenderStoryData }: Props) => {
                         onClick={() => router.push(`/story/view/${story.storyId}`)}  
                       >
                         {/* 画像 */}
-                        <Image
-                          src={story.thumbnailPath}
-                          alt={story.storyTitle}
-                          fill
-                          className="object-cover"
-                          style={{ objectPosition: 'center center' }}
-                        />
+                        <StoryCard story={story} />
 
                         {/* タイトル帯（画像の上に被せる） */}
-                        <div className="absolute w-full top-8 left-1/2 -translate-x-1/2 z-20 px-6 py-2 shadow-lg bg-gray-300/70">
+                        <div className="absolute w-full top-8 left-1/2 -translate-x-1/2 z-20 px-6 py-2 shadow-lg bg-gray-300">
                           <p className="text-center font-bold text-sm whitespace-nowrap overflow-hidden text-ellipsis text-white drop-shadow">
                             {story.storyTitle}
                           </p>
