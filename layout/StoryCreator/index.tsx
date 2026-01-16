@@ -104,17 +104,17 @@ const StoryCreator = () => {
    // --- ボタンの設定を定義（ここがキモ！） ---
   const footerConfig = {
     selectWords: {
-      left: { label: "やめる", action: () => {}, color: "bg-[#F55555]" },
+      left: { label: "やめる", action: () => {router.push("/main")}, color: "bg-[#F55555]" },
       center: null,
       right: { label: "決定", action: handleSelectCard, color: "bg-[#93C400]" },
     },
     createStory: {
-      left: { label: "やめる", action: () => {}, color: "bg-[#F55555]" },
+      left: { label: "やめる", action: () => {router.push("/main")}, color: "bg-[#F55555]" },
       center: { label: "これでおしまい！", action: () => handleFinishWriting(), color: "bg-[#93C400]" },
       right: currentEpisode < 5 ? { label: "つぎのお話へ", action: () => handleNextEpisode(), color: "bg-gray-400" } : null,
     },
     setTitleThumbnail: {
-      left: { label: "やめる", action: () => {}, color: "bg-[#F55555]" },
+      left: { label: "やめる", action: () => {router.push("/main")}, color: "bg-[#F55555]" },
       center: { label: "さくせい！", action: () => handleSaveStory().then(() => router.push("/main")), color: "bg-[#93C400]" },
       right: null,
     },
