@@ -1,6 +1,7 @@
 import StoryView from "@/layout/StoryView";
 import { getStoryDetail } from "@/utils/apiClient";
 import { isAuthenticatedUser } from "@/utils/auth";
+import { headers } from "next/headers";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -8,33 +9,15 @@ type Props = {
 
 export default async function Page({ params }: Props) {
   const { id } = await params;
-  // const storyData = {
-  //   title: `物語 ${id}`,
-  //   chapters: [
-  //     {
-  //       story: `ああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ`,
-  //       words: ["単語A", "単語B", "単語C", "単語D"],
-  //       feedback: "第1章のフィードバックをここに記述します。",
-  //     },
-  //     {
-  //       story: `これはストーリー ${id} の第2章です。`,
-  //       words: ["単語E", "単語F", "単語G", "単語H"],
-  //       feedback: "第2章のフィードバックをここに記述します。",
-  //     },
-  //     {
-  //       story: `これはストーリー ${id} の第3章です。\n複数行も保持します。`,
-  //       words: ["単語I", "単語J", "単語K", "単語L"],
-  //       feedback: "第3章のフィードバックをここに記述します。",
-  //     },
-  //     {
-  //       story: `これはストーリー ${id} の第4章です。`,
-  //       words: ["単語M", "単語N", "単語O", "単語P"],
-  //       feedback: "第4章のフィードバックをここに記述します。",
-  //     },
-  //   ],
-  // };
   const isAuthenticated = await isAuthenticatedUser();
   const storyData = await getStoryDetail(id, isAuthenticated);
 
-  return <StoryView story={storyData} />;
+  const headersData = await headers();
+  const host = headersData.get("host");
+
+  const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
+
+  const currentUrl = `${protocol}://${host}/story/${id}`;
+
+  return <StoryView story={storyData} shareUrl={currentUrl} />;
 }
