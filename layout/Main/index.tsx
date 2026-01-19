@@ -14,6 +14,8 @@ import "swiper/css/navigation";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 
+const MAX_DAILY_STORIES = 3;
+
 function StoryCard({ story }) {
   // 1. 初期値は渡されたパス、なければデフォルト画像
   const [imgSrc, setImgSrc] = useState(story.thumbnailPath || '/images/no-image.png');
@@ -46,6 +48,13 @@ const Main = ({ calenderStoryData }: Props) => {
   const router = useRouter();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
+  const isLimitReached = useMemo(() => {
+    const today = new Date();
+    const todayKey = toDateKey(today); // 今日の日付キー (例: "2023-10-25")
+    const todayStories = calenderStoryData[todayKey] || [];
+    return todayStories.length >= MAX_DAILY_STORIES;
+  }, [calenderStoryData]);
+
   const handleDateSelection = (date: Date) => {
     setSelectedDate(date);
     console.log("選択された日付:", date);
@@ -60,9 +69,6 @@ const Main = ({ calenderStoryData }: Props) => {
   const pagination = {
     clickable: true,
     el: '.swiper-pagination',
-    // renderBullet: function (index, className) {
-    //   return '<span class="' + className + '">' + (index + 1) + '</span>';
-    // },
   };
 
   return (
@@ -172,12 +178,18 @@ const Main = ({ calenderStoryData }: Props) => {
         )}
       </main>
       {/* 物語作成ボタン（常時表示の固定CTA） */}
-      <Link
-        href="/story/word-list/select"
-        className="fixed bottom-4 left-1/2 -translate-x-1/2 px-6 py-3 rounded-full bg-[#93C400] hover:bg-[#7DB300] text-white font-bold border-2 border-white shadow-lg z-50"
-      >
-        物語を作成する
-      </Link>
+      {isLimitReached ? (
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 px-6 py-3 rounded-full bg-gray-400 text-white font-bold border-2 border-white shadow-lg z-50 whitespace-nowrap">
+          また あしたね！
+        </div>
+      ) : (
+        <Link
+          href="/story/word-list/select"
+          className="fixed bottom-4 left-1/2 -translate-x-1/2 px-6 py-3 rounded-full bg-[#93C400] hover:bg-[#7DB300] text-white font-bold border-2 border-white shadow-lg z-50"
+        >
+          おはなし を つくる！
+        </Link>
+      )}
     </div>
   );
 };
