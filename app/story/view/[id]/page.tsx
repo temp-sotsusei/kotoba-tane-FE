@@ -17,7 +17,7 @@ export default async function Page({ params }: Props) {
 
   const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
 
-  const currentUrl = `${protocol}://${host}/story/${id}`;
+  const currentUrl = `${protocol}://${host}/story/view/${id}`;
 
   return <StoryView story={storyData} shareUrl={currentUrl} />;
 }
