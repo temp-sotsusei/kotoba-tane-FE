@@ -15,7 +15,7 @@ import {
 /**
  * カレンダーの開始曜日（土曜始まり）
  */
-const START_DAY_OF_WEEK = 6 as const satisfies Weekday;
+const START_DAY_OF_WEEK = 0 as const satisfies Weekday;
 
 // ========================================
 // カスタムフック オプション

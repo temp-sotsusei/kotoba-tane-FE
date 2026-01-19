@@ -41,7 +41,7 @@ export const CALENDAR_GRID_SIZE = 42 as const;
 /**
  * 日本語の曜日ラベル（土曜始まり）
  */
-export const WEEKDAY_LABELS_JA = ['土', '日', '月', '火', '水', '木', '金'] as const;
+export const WEEKDAY_LABELS_JA = ['日', '月', '火', '水', '木', '金', '土'] as const;
 
 // ========================================
 // ユーティリティ関数
