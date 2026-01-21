@@ -157,7 +157,8 @@ export const useStoryCreator = () => {
         
         try {
             commitCurrentEpisode(activeStoryContent);
-            const response = await postNextChapter(activeStoryContent);
+            const contentPayload = JSON.parse(JSON.stringify(activeStoryContent));
+            const response = await postNextChapter(contentPayload);
             const nextWords: WordCard[] = response; 
             setWordCardOptions(nextWords);
             setSelectedWords(nextWords[0]);
