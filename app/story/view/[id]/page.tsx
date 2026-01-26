@@ -19,5 +19,5 @@ export default async function Page({ params }: Props) {
 
   const currentUrl = `${protocol}://${host}/story/view/${id}`;
 
-  return <StoryView story={storyData} shareUrl={currentUrl} />;
+  return <StoryView story={storyData} shareUrl={currentUrl} id={id} />;
 }

@@ -4,13 +4,15 @@ import Image from "next/image";
 import ReadOnlyEditor from "@/components/ReadOnlyEditor";
 import { APP_TITLE } from "@/const";
 import { JSONContent } from "@tiptap/react";
-import { useState, type FC } from "react";
+import { useEffect, useState, type FC } from "react";
 import { Check, Copy } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { isAuthenticatedUser } from "@/utils/auth";
+import { getStoryDetail } from "@/utils/apiClient";
 
 type Chapter = {
   chapterJson: JSONContent;
-  keywords: {keyword: string}[];
+  keywords: { keyword: string }[];
   feedback: string;
 };
 
@@ -24,13 +26,17 @@ type Story = {
 type Props = {
   story: Story;
   shareUrl: string;
+  id: string;
 };
 
-const StoryView: FC<Props> = ({ story, shareUrl }) => {
+const StoryView: FC<Props> = ({ story, shareUrl, id }) => {
   const router = useRouter();
   const { storyTitle, chapters, thumbnailPath, hasFeedback } = story;
 
   const [copied, setCopied] = useState(false);
+  const [feedback, setFeedback] = useState(
+    chapters.map((data) => data.feedback),
+  );
 
   const handleCopy = () => {
     navigator.clipboard.writeText(shareUrl).then(() => {
@@ -38,13 +44,26 @@ const StoryView: FC<Props> = ({ story, shareUrl }) => {
       setTimeout(() => setCopied(false), 2000);
     });
   };
+
+  useEffect(() => {
+    const intervalId = setInterval(async () => {
+      const isAuthenticated = await isAuthenticatedUser();
+      const storyData = await getStoryDetail(id, isAuthenticated);
+      console.log("↓storyData:");
+      console.log(storyData);
+      console.log(storyData.chapters.map((data) => data.feedback));
+      setFeedback(storyData.chapters.map((data) => data.feedback));
+    }, 1000);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, []);
   console.log("Rendering StoryView with story:", story);
 
   return (
     <div className="bg-[url('/images/background.jpg')] w-dvw flex flex-col gap-4">
-      <header 
-        className="flex flex-col items-center justify-center w-full pt-6 pb-3 gap-4 bg-[#C1ED86] border-b-2 border-[#93C400] shadow-md px-4"
-      >
+      <header className="flex flex-col items-center justify-center w-full pt-6 pb-3 gap-4 bg-[#C1ED86] border-b-2 border-[#93C400] shadow-md px-4">
         <h1 className="flex items-center">
           <Image
             src={"/images/icon.png"}
@@ -57,8 +76,10 @@ const StoryView: FC<Props> = ({ story, shareUrl }) => {
       </header>
       <main className="flex flex-col items-center gap-4">
         <div className="relative border-4 border-[#93C400] overflow-hidden max-w-sm">
-          <h2 className="absolute top-8 right-0 left-0 text-stone-800 text-xl font-bold text-center bg-stone-50 py-2">~<span className="px-2">{storyTitle}</span>~</h2>
-          <Image 
+          <h2 className="absolute top-8 right-0 left-0 text-stone-800 text-xl font-bold text-center bg-stone-50 py-2">
+            ~<span className="px-2">{storyTitle}</span>~
+          </h2>
+          <Image
             src={thumbnailPath}
             alt="サムネイル画像"
             width={1920}
@@ -69,11 +90,10 @@ const StoryView: FC<Props> = ({ story, shareUrl }) => {
 
         <section className="bg-stone-50 border-2 border-[#93C400] rounded-md max-w-sm">
           {chapters.map((chapter, index) => (
-            <div
-              key={index}
-              className="flex flex-col gap-3"
-            >
-              <div className="text-base md:text-lg font-bold bg-[#93C400] text-white text-center">第{index + 1}章</div>
+            <div key={index} className="flex flex-col gap-3">
+              <div className="text-base md:text-lg font-bold bg-[#93C400] text-white text-center">
+                第{index + 1}章
+              </div>
 
               <div className="p-2 mx-4 border border-stone-200 rounded-lg bg-white">
                 <ReadOnlyEditor content={chapter.chapterJson} />
@@ -90,9 +110,9 @@ const StoryView: FC<Props> = ({ story, shareUrl }) => {
                 ))}
               </div>
 
-              {chapter.feedback && (
+              {feedback && (
                 <div className="border-t border-stone-200 py-2 px-4 bg-white text-sm whitespace-pre-wrap">
-                  {chapter.feedback}
+                  {feedback[index]}
                 </div>
               )}
             </div>
@@ -104,7 +124,7 @@ const StoryView: FC<Props> = ({ story, shareUrl }) => {
         {hasFeedback ? (
           <button
             className="h-fit px-2 py-1 bg-[#FF8258] text-white font-bold border-2 border-white text-sm rounded-md"
-            onClick={() => router.push('/main')}
+            onClick={() => router.push("/main")}
           >
             ホームにもどる
           </button>
@@ -112,11 +132,17 @@ const StoryView: FC<Props> = ({ story, shareUrl }) => {
           <div className="flex flex-col items-center gap-3">
             <button
               className="h-fit px-2 py-1 bg-[#FF8258] text-white font-bold border-2 border-white text-sm rounded-md"
-              onClick={() => router.push('/')}
+              onClick={() => router.push("/")}
             >
               『ことばのタネ』をはじめよう！
             </button>
-            <Image src="/images/icon.png" alt="ロゴ" width={96} height={16} priority />
+            <Image
+              src="/images/icon.png"
+              alt="ロゴ"
+              width={96}
+              height={16}
+              priority
+            />
           </div>
         )}
       </footer>
@@ -125,7 +151,7 @@ const StoryView: FC<Props> = ({ story, shareUrl }) => {
         <span className="text-sm text-gray-700 truncate max-w-xs">
           {shareUrl}
         </span>
-        
+
         <button
           onClick={handleCopy}
           className="p-1 hover:bg-gray-200 rounded transition-colors"
