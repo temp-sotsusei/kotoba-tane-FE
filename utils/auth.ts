@@ -11,7 +11,9 @@ export const isAuthenticatedUser = async () => {
     // クライアントサイド: 同様にセッションの有無を確認
     try {
       // フロントエンド用の auth0 インスタンスから取得
-      const session = await fetch('/auth/session').then(res => res.json());
+      const session = await fetch("/auth/access-token").then((res) =>
+        res.json(),
+      );
       return Boolean(session?.accessToken);
     } catch {
       return false;

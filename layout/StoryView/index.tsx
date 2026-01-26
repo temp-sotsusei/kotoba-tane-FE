@@ -2,13 +2,11 @@
 
 import Image from "next/image";
 import ReadOnlyEditor from "@/components/ReadOnlyEditor";
-import { APP_TITLE } from "@/const";
 import { JSONContent } from "@tiptap/react";
 import { useEffect, useState, type FC } from "react";
 import { Check, Copy } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { isAuthenticatedUser } from "@/utils/auth";
-import { getStoryDetail } from "@/utils/apiClient";
+import { getAccessToken } from "@auth0/nextjs-auth0";
 
 type Chapter = {
   chapterJson: JSONContent;
@@ -47,13 +45,27 @@ const StoryView: FC<Props> = ({ story, shareUrl, id }) => {
 
   useEffect(() => {
     const intervalId = setInterval(async () => {
-      const isAuthenticated = await isAuthenticatedUser();
-      const storyData = await getStoryDetail(id, isAuthenticated);
+      // const isAuthenticated = await isAuthenticatedUser();
+      // const storyData = await getStoryDetail(id, isAuthenticated);
+      const accessToken = await getAccessToken();
+      const headers = accessToken
+        ? { Authorization: `Bearer ${accessToken}` }
+        : {};
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/story?storyId=${id}`,
+        {
+          headers,
+          mode: "cors",
+          credentials: "include",
+        },
+      );
+      const storyData = await response.json();
+
       console.log("↓storyData:");
       console.log(storyData);
       console.log(storyData.chapters.map((data) => data.feedback));
       setFeedback(storyData.chapters.map((data) => data.feedback));
-    }, 1000);
+    }, 10000);
 
     return () => {
       clearInterval(intervalId);
@@ -109,10 +121,32 @@ const StoryView: FC<Props> = ({ story, shareUrl, id }) => {
                   </div>
                 ))}
               </div>
-
-              {feedback && (
+              {feedback[index] ? (
                 <div className="border-t border-stone-200 py-2 px-4 bg-white text-sm whitespace-pre-wrap">
                   {feedback[index]}
+                </div>
+              ) : (
+                <div className="flex items-center justify-center py-2 px-4 text-[#93C400] w-full">
+                  <svg
+                    className="animate-spin mr-3 h-6 w-6"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
                 </div>
               )}
             </div>
