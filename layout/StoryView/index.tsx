@@ -45,8 +45,6 @@ const StoryView: FC<Props> = ({ story, shareUrl, id }) => {
 
   useEffect(() => {
     const intervalId = setInterval(async () => {
-      // const isAuthenticated = await isAuthenticatedUser();
-      // const storyData = await getStoryDetail(id, isAuthenticated);
       const accessToken = await getAccessToken();
       const headers = accessToken
         ? { Authorization: `Bearer ${accessToken}` }
