@@ -51,7 +51,7 @@ const StoryView: FC<Props> = ({ story, shareUrl, id }) => {
         ? { Authorization: `Bearer ${accessToken}` }
         : {};
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/story?storyId=${id}`,
+        `${process.env.NEXT_PUBLIC_API_ENDPOINT}api/story?storyId=${id}`,
         {
           headers,
           mode: "cors",
