@@ -66,7 +66,7 @@ const StoryView: FC<Props> = ({ story, shareUrl, id }) => {
     return () => {
       clearInterval(intervalId);
     };
-  }, []);
+  }, [feedback]);
   console.log("Rendering StoryView with story:", story);
 
   return (
